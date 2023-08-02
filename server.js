@@ -30,6 +30,10 @@ app.get("/api/notes", (req, res) => {
 app.post("/api/notes", (req, res) => {
   console.log(req.body);
   fs.readFile("./db/db.json", "utf-8", (err, data) => {
+    if (err) {
+      console.log(err);
+      return res.status(407).json({ error: "The note did not post." });
+    }
     const database = JSON.parse(data);
     database.push(req.body);
     fs.writeFile("./db/db.json", JSON.stringify(database), () => {
@@ -42,7 +46,7 @@ app.delete("/api/notes/:id", (req, res) => {
   const database = JSON.parse(fs.readFile("./db/db.json"));
   const notesDeleted = database.filter((item) => item.id !== req.params.id);
   fs.writeFile("./db/db.json", JSON.stringify(notesDeleted));
-  res.json(notesDeleted);
+  res.json(database);
 });
 
 app.listen(PORT, () =>
