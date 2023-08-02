@@ -38,6 +38,13 @@ app.post("/api/notes", (req, res) => {
   });
 });
 
+app.delete("/api/notes/:id", (req, res) => {
+  const database = JSON.parse(fs.readFile("./db/db.json"));
+  const notesDeleted = database.filter((item) => item.id !== req.params.id);
+  fs.writeFile("./db/db.json", JSON.stringify(notesDeleted));
+  res.json(notesDeleted);
+});
+
 app.listen(PORT, () =>
   console.log(`App listening at http://localhost:${PORT}`)
 );
